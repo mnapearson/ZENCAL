@@ -1,3 +1,5 @@
+const { hashPassword } = require("../utilities");
+
 exports.seed = async function (knex) {
   await knex("users").del();
   await knex("events").del();
@@ -7,20 +9,17 @@ exports.seed = async function (knex) {
     {
       id: 1,
       email: "marratoon@gmail.com",
-      password: "12345",
-      username: "mark",
+      hashedPassword: await hashPassword("123465"),
     },
     {
       id: 2,
       email: "mnapearson@gmail.com",
-      password: "12345",
-      username: "michaela",
+      hashedPassword: await hashPassword("123456"),
     },
     {
       id: 3,
       email: "leonap@gmail.com",
-      password: "12345",
-      username: "leona",
+      hashedPassword: await hashPassword("123456"),
     },
   ]);
 
