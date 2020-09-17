@@ -1,51 +1,26 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Welcome from "./components/welcome.vue";
-import Events from "../components/events.vue";
-import CreateEvent from "../components/CreateEvent.vue";
-import Tasks from "../components/tasks.vue";
-import CreateTask from "../components/CreateTask.vue";
-import Auth from "../components/Auth.vue";
-import store from "../store";
+import Welcome from "../views/Welcome.vue";
+import Create from "../views/Create.vue";
+import Calendar from "../views/Calendar.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "welcome",
+    name: "Welcome",
     component: Welcome,
   },
   {
-    path: "/tasks",
-    name: "Tasks",
-    component: Tasks,
+    path: "/create",
+    name: "Create",
+    component: Create,
   },
   {
-    path: "/tasks/new",
-    name: "CreateTask",
-    component: CreateTask,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/events",
-    name: "Events",
-    component: Events,
-  },
-  {
-    path: "/events/new",
-    name: "CreateEvent",
-    component: CreateEvent,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/auth",
-    name: "Auth",
-    component: Auth,
+    path: "/calendar",
+    name: "Calendar",
+    component: Calendar,
   },
 ];
 

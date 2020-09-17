@@ -1,19 +1,30 @@
 <template>
   <div id="app">
-    <button v-if="$store.state.user" class="welcome" @click="$store.dispatch('logout')">Logout</button>
     <router-view />
-    <div class="notification">
-      <div
-        class="container"
-        @click="$store.commit('REMOVE_NOTIFICATION', notification.id)"
-        v-for="notification in $store.state.notifications"
-        :key="notification.id"
-      >{{ notification.text }}</div>
-    </div>
   </div>
 </template>
 
-
-
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap");
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
+}
 </style>
