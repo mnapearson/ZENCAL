@@ -1,4 +1,4 @@
-const { hashPassword } = require("../utilities");
+const { hashPassword } = require("../../../utilities");
 
 exports.seed = async function (knex) {
   await knex("users").del();
