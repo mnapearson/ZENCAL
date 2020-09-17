@@ -5,7 +5,9 @@ const bodyParser = require("body-parser");
 const jsonWebToken = require("jsonwebtoken");
 const cors = require("cors");
 const { hashPassword, checkPassword, ApiError } = require("./utilities");
-const { response, request } = require("express");
+
+const { request, response } = require("express");
+
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -16,10 +18,10 @@ app.use(bodyParser.json());
 
 const authMiddleware = (req, res, next) => {
   try {
-    const header = request.headers.authorization;
+    const header = req.headers.authorization;
     const token = header.slice(header.indexOf(" ") + 1);
     const payload = jsonWebToken.verify(token, JWT_SECRET);
-    request.user = payload;
+    req.user = payload;
     next();
   } catch (error) {
     throw new ApiError("Invalid JWT", 401);
@@ -30,10 +32,15 @@ app.get("/", (req, res) => {
   res.sendStatus(200);
 });
 
-app.post("/auth/signup", async (req, res) => {
+app.post("/signup", async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password || password.length < 5) {
-    throw new Error("Missing email/password/username");
+  if (
+    !email ||
+    !password ||
+    password.length < 5 ||
+    !/\w+@\w+\.\w{2,}/.test(email)
+  ) {
+    throw new ApiError("Missing email/password", 400);
   }
   const hashedPassword = await hashPassword(password);
   const [id] = await knex("users").insert({ email, hashedPassword });
@@ -42,7 +49,7 @@ app.post("/auth/signup", async (req, res) => {
   res.send({ user, jwt });
 });
 
-app.post("/auth/signin", async (req, res) => {
+app.post("/signin", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     throw new ApiError("Missing email/password", 400);
@@ -61,41 +68,64 @@ app.post("/auth/signin", async (req, res) => {
   res.send({ user, jwt });
 });
 
-app.get("/users/:id/events", async (req, res) => {
+app.post("/events", authMiddleware, async (req, res) => {
   try {
-    res.send(await knex("events").select().where({ userId: req.params.id }));
+    const eventData = { ...req.body, userId: req.user.id };
+    const [id] = await knex("events").insert(eventData);
+    const event = await knex("events")
+      .select("name", "date", "location", "description")
+      .where({ id });
+    res.send(event);
   } catch (error) {
-    console.error(error);
-  }
-});
-
-app.get("/users/:id/tasks", async (req, res) => {
-  try {
-    res.send(await knex("tasks").select().where({ userId: req.params.id }));
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-app.post("/users/:id/events", async (req, res) => {
-  try {
-    const [id] = await knex("events").insert(req.body);
-    const event = await knex("events").select().where({ id });
-    res.status(201).send(event);
-  } catch (error) {
-    console.error(error);
     res.sendStatus(400);
   }
 });
 
-app.post("/users/:id/tasks", async (req, res) => {
+app.post("/tasks", authMiddleware, async (req, res) => {
   try {
-    const [id] = await knex("tasks").insert(req.body);
-    const task = await knex("tasks").select().where({ id });
-    res.status(201).send(task);
+    const taskData = { ...req.body, userId: req.user.id };
+    const [id] = await knex("tasks").insert(taskData);
+    const task = await knex("tasks")
+      .select("task", "deadline", "notes")
+      .where({ id });
+    res.send(task);
+  } catch (error) {
+    res.sendStatus(400);
+  }
+});
+
+app.get("/events", authMiddleware, async (req, res) => {
+  try {
+    res.send(
+      await knex("events")
+        .select("name", "date", "location", "description", "attending")
+        .where({ userId: req.user.id })
+    );
   } catch (error) {
     console.error(error);
-    res.sendStatus(400);
+  }
+});
+
+app.get("/tasks", authMiddleware, async (req, res) => {
+  try {
+    res.send(
+      await knex("tasks")
+        .select("task", "deadline", "notes", "completed")
+        .where({ userId: req.user.id })
+    );
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.use((error, req, res, next) => {
+  console.error(`[ERROR] ${error}`);
+  if (error instanceof ApiError) {
+    res.status(error.status).send({
+      error: error.message,
+    });
+  } else {
+    res.status(400).send({ error: String(error) });
   }
 });
 
