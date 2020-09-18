@@ -2,20 +2,21 @@
   <div>
     <h1>ZenCal</h1>
 
-    <form @submit.prevent="signin">
+    <form @submit.prevent="submit">
       <input
         class="email"
         type="text"
         name="email"
         v-model="form.email"
-      />email<input
+        placeholder="email"
+      /><input
         class="password"
         type="password"
         name="password"
         v-model="form.password"
-      />password
-      <input class="signin" type="submit" value="signin" />
-      <input class="signup" type="submit" value="signup" />
+        placeholder="password"
+      />
+      <input class="signup" type="submit" :value="mode" />
     </form>
   </div>
 </template>
@@ -24,17 +25,34 @@
 export default {
   data() {
     return {
-      form: { email: "", password: "" },
+      form: {
+        email: "",
+        password: "",
+      },
+      mode: "Sign In",
     };
   },
   methods: {
-    async signup() {
-      await this.$store.dispatch("signup", this.firm);
-      this.$router.push({ name: "Create" });
-    },
-    async signin() {
-      await this.$store.dispatch("signin", this.form);
-      this.$router.push({ name: "Calendar" });
+    // async signup() {
+    //   await this.$store.dispatch("signup", this.form);
+    //   this.$router.push({ name: "Create" });
+    // },
+    // async signin() {
+    //   await this.$store.dispatch("signin", this.form);
+    //   this.$router.push({ name: "Calendar" });
+    // },
+    async submit() {
+      if (this.form.email && this.form.password) {
+        try {
+          await this.$store.dispatch(
+            this.mode == "sign in" ? "signin" : "signup",
+            this.form
+          );
+          this.$router.push({ name: "Calendar" });
+        } catch (error) {
+          console.error(error);
+        }
+      }
     },
   },
 };
