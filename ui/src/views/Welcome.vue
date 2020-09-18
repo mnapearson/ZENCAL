@@ -16,8 +16,19 @@
         v-model="form.password"
         placeholder="password"
       />
-      <input class="signup" type="submit" :value="mode" />
+      <input
+        class="signup"
+        :class="mode == 'Welcome'"
+        type="submit"
+        :value="mode"
+      />
     </form>
+    <h2
+      :class="mode == 'Sign Up' ? 'text-blue-400' : 'text-gray-200'"
+      @click="mode = 'Sign Up'"
+    >
+      Need to Sign Up?
+    </h2>
   </div>
 </template>
 
@@ -29,7 +40,7 @@ export default {
         email: "",
         password: "",
       },
-      mode: "Sign In",
+      mode: "Welcome",
     };
   },
   methods: {
@@ -45,7 +56,7 @@ export default {
       if (this.form.email && this.form.password) {
         try {
           await this.$store.dispatch(
-            this.mode == "sign in" ? "signin" : "signup",
+            this.mode == "Welcome" ? "signin" : "signup",
             this.form
           );
           this.$router.push({ name: "Calendar" });
@@ -66,8 +77,13 @@ export default {
 }
 
 h1 {
-  margin: 5rem auto;
+  margin-top: 5rem;
+  margin-bottom: 2rem;
   font-size: 60px;
+}
+
+h2 {
+  font-size: 18px;
 }
 
 form {

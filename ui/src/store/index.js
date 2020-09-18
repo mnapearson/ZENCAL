@@ -7,6 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   plugins: [createPersistedState()],
   state: {
+    events: [],
     user: null,
     jwt: null,
   },
@@ -18,6 +19,9 @@ export default new Vuex.Store({
     LOGOUT(state) {
       state.user = null;
       state.jwt = null;
+    },
+    SET_EVENTS(state, events) {
+      state.events = events;
     },
   },
   actions: {
@@ -46,6 +50,18 @@ export default new Vuex.Store({
         throw new Error(data.error);
       }
       ctx.dispatch("SET_AUTH_DATA", data);
+    },
+    async createEvent(event) {
+      const body = await (
+        await fetch("http://localhost3000/events", {
+          method: "POST",
+          body: JSON.stringify(event),
+          headers: { "Content-Type": "application/json" },
+        })
+      ).json();
+      if (body.error) {
+        throw new Error(body.error);
+      }
     },
   },
   modules: {},
