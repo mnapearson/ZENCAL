@@ -1,22 +1,16 @@
 <template>
   <div>
-    <router-link class="calendar" to="/calendar">Calendar</router-link
-    ><button @click="logout">logout</button>
+    <router-link class="calendar" to="/calendar">Calendar</router-link>
+    <button @click="logout">logout</button>
     <h1>Create</h1>
     <h2>New Event</h2>
     <form @submit.prevent="submit">
       <input type="text" v-model="form.name" placeholder="Name" />
       <input @input="form.date = $event.target.value" placeholder="Date" />
-      <input
-        @input="form.location = $event.target.value"
-        placeholder="Location"
-      />
-      <input
-        @input="form.description = $event.target.value"
-        placeholder="Description"
-      />
+      <input @input="form.location = $event.target.value" placeholder="Location" />
+      <input @input="form.description = $event.target.value" placeholder="Description" />
       <div class="flex justify-end">
-        <input type="submit" value="Save Event" />
+        <input class="save" type="submit" value="Save" />
       </div>
     </form>
   </div>
@@ -30,8 +24,8 @@ export default {
         name: "",
         date: "",
         location: "",
-        description: "",
-      },
+        description: ""
+      }
     };
   },
   methods: {
@@ -43,8 +37,8 @@ export default {
     logout() {
       console.log("logout");
       this.$router.push({ name: "Welcome" });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -68,5 +62,18 @@ button {
 
 form {
   margin-top: 2rem;
+}
+
+input {
+  padding: 0.5rem;
+}
+
+.save {
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  color: white;
+  background: black;
+  padding: 0.2rem 0.8rem;
 }
 </style>

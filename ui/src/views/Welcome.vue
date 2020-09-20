@@ -1,34 +1,21 @@
 <template>
   <div>
     <h1>ZenCal</h1>
-
     <form @submit.prevent="submit">
+      <input class="email" type="text" name="email" v-model="form.email" placeholder="email" />
       <input
-        class="email"
-        type="text"
-        name="email"
-        v-model="form.email"
-        placeholder="email"
-      /><input
         class="password"
         type="password"
         name="password"
         v-model="form.password"
         placeholder="password"
       />
-      <input
-        class="signup"
-        :class="mode == 'Welcome'"
-        type="submit"
-        :value="mode"
-      />
+      <input class="signup" :class="mode == 'Welcome'" type="submit" :value="mode" />
     </form>
     <h2
       :class="mode == 'Sign Up' ? 'text-blue-400' : 'text-gray-200'"
       @click="mode = 'Sign Up'"
-    >
-      Need to Sign Up?
-    </h2>
+    >Need to Sign Up?</h2>
   </div>
 </template>
 
@@ -38,20 +25,12 @@ export default {
     return {
       form: {
         email: "",
-        password: "",
+        password: ""
       },
-      mode: "Welcome",
+      mode: "Welcome"
     };
   },
   methods: {
-    // async signup() {
-    //   await this.$store.dispatch("signup", this.form);
-    //   this.$router.push({ name: "Create" });
-    // },
-    // async signin() {
-    //   await this.$store.dispatch("signin", this.form);
-    //   this.$router.push({ name: "Calendar" });
-    // },
     async submit() {
       if (this.form.email && this.form.password) {
         try {
@@ -64,8 +43,8 @@ export default {
           console.error(error);
         }
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -105,6 +84,15 @@ form {
   outline: none;
   background: white;
   border-bottom: 1px solid black;
+}
+
+.signup {
+  border: none;
+  border-radius: 10px;
+  padding: 0.3rem 0.5rem;
+  outline: none;
+  background: black;
+  color: white;
 }
 
 .submit {
