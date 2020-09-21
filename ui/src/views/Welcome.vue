@@ -1,6 +1,13 @@
 <template>
   <div>
     <h1>ZenCal</h1>
+    <img src="ui/src/assets/logo.png" alt />
+    <h2>Need to sign up?</h2>
+    <h2
+      :class="mode == 'Sign Up' ? 'text-blue-400' : 'text-gray-200'"
+      @click="mode = 'Sign Up'"
+    >(Do it.)</h2>
+
     <form @submit.prevent="submit">
       <input class="email" type="text" name="email" v-model="form.email" placeholder="email" />
       <input
@@ -12,10 +19,6 @@
       />
       <input class="signup" :class="mode == 'Welcome'" type="submit" :value="mode" />
     </form>
-    <h2
-      :class="mode == 'Sign Up' ? 'text-blue-400' : 'text-gray-200'"
-      @click="mode = 'Sign Up'"
-    >Need to Sign Up?</h2>
   </div>
 </template>
 
